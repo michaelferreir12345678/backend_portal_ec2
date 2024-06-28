@@ -1,13 +1,15 @@
 from flask import Blueprint, request, jsonify
 from ..services.file_processing import processar_arquivo
-from flask_login import login_required
+from flask_login import login_required, current_user
+from app.middlewares.auth_middleware import token_required
+
 
 
 process_bp = Blueprint('process_bp', __name__)
 
 @process_bp.route('/processar_arquivo', methods=['POST'])
-@login_required
-def process_arquivo():
+@token_required
+def process_arquivo(current_user):
     if 'arquivos' not in request.files:
         return jsonify({"error": "Nenhum arquivo enviado"}), 400
 

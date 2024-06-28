@@ -1,13 +1,15 @@
 from flask import Blueprint, request, jsonify
 from ..services.file_processing import processar_arquivo, encontrar_erros
-from flask_login import login_required
+from flask_login import login_required, current_user
+from app.middlewares.auth_middleware import token_required
+
 
 
 errors_bp = Blueprint('errors_bp', __name__)
 
 @errors_bp.route('/processar_erros', methods=['POST'])
-@login_required
-def processar_erros():
+@token_required
+def processar_erros(current_user):
     if request.method == 'POST':
         try:
             # Verifica se foram enviados arquivos na requisição

@@ -2,13 +2,15 @@ from flask import Blueprint, request, jsonify
 from ..services.file_processing import processar_arquivo
 from ..services.validation import validar_dados
 from ..utils.data_loader import carregar_dados
-from flask_login import login_required
+from flask_login import login_required,current_user
+from app.middlewares.auth_middleware import token_required
+
 
 inconsistencies_bp = Blueprint('inconsistencies_bp', __name__)
 
 @inconsistencies_bp.route('/processar_inconsistencia', methods=['POST'])
-@login_required
-def processar_arquivo_route():
+@token_required
+def processar_arquivo_route(current_user):
     if request.method == 'POST':
         try:
             # Verifica se foram enviados arquivos na requisição
